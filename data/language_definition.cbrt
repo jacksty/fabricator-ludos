@@ -1,0 +1,66 @@
+%scanner%
+
+: /\*([^\*]|[\r\n]|(\*+([^\*/]|[\r\n])))*\*/;
+: //.*\n;
+: [\ ];
+
+%token PAREN_OPEN PAREN_CLOSE COMMA
+PAREN_OPEN: \(;
+PAREN_CLOSE: \);
+COMMA: \,;
+
+%token PLUS MINUS ASTERISK SLASH PERCENT
+PLUS: \+;
+MINUS: \-;
+ASTERISK: \*;
+SLASH: /;
+PERCENT: %;
+
+%token FLOAT INT STRING BOOL
+FLOAT: [0-9]*\.[0-9]+;
+INT: [0-9]+;
+STRING: \"((\\\")|[^"])*\";
+BOOL: true|false;
+
+%token CREATE ENTITY AT MOVE_TO
+CREATE: create;
+ENTITY: entity;
+AT: at;
+MOVE_TO: moveto;
+
+%token ID
+ID: [a-zA-Z_][a-zA-Z0-9_]*;
+
+%token NEW_LINE
+NEW_LINE: \n;
+
+%nt int float number vec2 vec3 position
+%nt creation move action
+%nt line script
+
+%grammar%
+/* needs actions */
+
+script: line;
+script: script line;
+
+line: action NEW_LINE;
+line: NEW_LINE;
+
+action: creation;
+action: move;
+
+creation: CREATE ENTITY ID AT position;
+creation: CREATE ENTITY ID;
+move: ID MOVE_TO position;
+
+position: vec3;
+position: vec2;
+
+vec2: PAREN_OPEN number COMMA number PAREN_CLOSE;
+vec3: PAREN_OPEN number COMMA number COMMA number PAREN_CLOSE;
+
+number: MINUS FLOAT;
+number: MINUS INT;
+number: FLOAT;
+number: INT;
