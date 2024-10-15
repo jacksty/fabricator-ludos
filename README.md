@@ -1,2 +1,2 @@
 # fabricator-ludos
-WIP compiler to turn english-like script into game engine code
+WIP transpiler to turn english-like script into c++ that hooks into unreal engine
